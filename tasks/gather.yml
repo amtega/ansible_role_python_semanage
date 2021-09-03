@@ -1,0 +1,11 @@
+---
+
+- name: Gather facts
+  setup:
+  when: ansible_facts.python.executable is undefined
+
+- name: Gather python real path
+  command: "realpath {{ ansible_facts.python.executable }}"
+  changed_when: no
+  failed_when: no
+  register: python_semanage_python_check_result
