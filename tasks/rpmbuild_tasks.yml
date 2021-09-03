@@ -1,0 +1,76 @@
+---
+
+- block:
+    - name: Gather package facts
+      package_facts:
+
+    - name: Setup required packages
+      include_role:
+        name: amtega.packages
+      vars:
+        packages_os: "{{ python_semanage_package_build_deps }}"
+
+    - name: Create temporary directory
+      tempfile:
+        state: directory
+      register: python_semanage_tmp_dir
+
+    - name: Download libsemanage source package
+      command: >-
+        yumdownloader --source libsemanage
+        --destdir={{ python_semanage_tmp_dir.path }}
+      register: python_semanage_result
+
+    - name: Find libsemanage source package
+      find:
+        paths: "{{ python_semanage_tmp_dir.path }}"
+        file_type: file
+      register: python_semanage_srpm_search_result
+
+    - name: Install libsemanage source package
+      command: >-
+        rpm --root={{ python_semanage_tmp_dir.path }}
+        -i {{ python_semanage_srpm_search_result.files.0.path }}
+      args:
+        warn: no
+
+    - name: Enable python3 in libsemanage SPEC file
+      lineinfile:
+        path: "{{ python_semanage_spec_path }}"
+        regexp: "%global with_python3 0"
+        line: "%global with_python3 1"
+
+    - name: Build libsemanage packages
+      command: >-
+        rpmbuild
+        --define "_topdir {{ python_semanage_buildroot }}"
+        -ba {{ python_semanage_spec_path }}
+
+    - name: Install libsemanage-python3 package
+      shell: >-
+        yum install -y
+        {{ python_semanage_buildroot }}/RPMS/x86_64/libsemanage-python3*.rpm
+      args:
+        warn: no
+
+  always:
+    - name: Remove temporary directory
+      file:
+        path: "{{ python_semanage_tmp_dir.path }}"
+        state: absent
+
+    - name: Remove packages used for build
+      package:
+        name: >-
+          {{ python_semanage_package_build_deps
+             [ansible_facts.distribution | lower]
+             [ansible_facts.distribution_major_version | int].keys() | list
+             | difference(ansible_facts.packages.keys() | list) }}
+        state: absent
+
+  vars:
+    python_semanage_buildroot: >-
+      {{ python_semanage_tmp_dir.path }}/root/rpmbuild
+
+    python_semanage_spec_path: >-
+      {{ python_semanage_buildroot }}/SPECS/libsemanage.spec

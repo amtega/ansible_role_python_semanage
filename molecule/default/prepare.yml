@@ -1,5 +1,11 @@
 ---
 
 - name: Prepare
-  hosts: molecule_hosts
+  hosts: molecule_hosts_centos_7
   gather_facts: no
+  tasks:
+    - name: Setup python3
+      raw: yum install python3 -y
+      changed_when: yes
+      args:
+        warn: no

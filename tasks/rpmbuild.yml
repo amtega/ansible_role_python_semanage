@@ -1,0 +1,16 @@
+---
+
+- name: Check libsemanage-python3 package
+  command: rpm -q libsemanage-python3
+  args:
+    warn: no
+  changed_when: no
+  failed_when: no
+  register: python_semanage_package_check_result
+
+- name: Build libsemanage-python3 package
+  include_tasks: rpmbuild_tasks.yml
+  when:
+    - ansible_facts.distribution_major_version is version("7", "<=")
+    - python_semanage_package_check_result.rc != 0
+    - python_semanage_python_check_result.stdout is search("python3")
