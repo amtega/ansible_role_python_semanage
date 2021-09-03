@@ -1,0 +1,5 @@
+---
+
+- name: Stop playbook
+  fail:
+    msg: Setup of python semanage for custom python is not supported yet

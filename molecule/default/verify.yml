@@ -2,6 +2,10 @@
 
 - name: Verify
   hosts: molecule_hosts
-  gather_facts: no
+  gather_facts: yes
   tasks:
-    - debug: msg="Verify to be done"
+    - name: Check semanage library
+      command: >-
+        {{ ansible_facts.python.executable }}
+        - c "import semanage"
+      changed_when: no

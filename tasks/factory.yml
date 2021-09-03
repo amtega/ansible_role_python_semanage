@@ -1,0 +1,7 @@
+---
+
+- include_tasks: rpmbuild.yml
+  when: ansible_facts.distribution_major_version is version("7", "==")
+
+- include_tasks: install.yml
+  when: ansible_facts.distribution_major_version is version("7", ">")
