@@ -34,11 +34,23 @@
       args:
         warn: no
 
+    - name: Gather dist tag for libsemanage package
+      shell: rpm -q libsemanage | cut -d'.' -f 3
+      args:
+        warn: no
+      register: python_semanage_dist_tag_result
+
     - name: Enable python3 in libsemanage SPEC file
       lineinfile:
         path: "{{ python_semanage_spec_path }}"
         regexp: "%global with_python3 0"
         line: "%global with_python3 1"
+
+    - name: Setup dist tag in libsemanage SPEC file
+      replace:
+        path: "{{ python_semanage_spec_path }}"
+        regexp: "%\\{\\?dist\\}"
+        replace: "{{ python_semanage_dist_tag_result.stdout | trim }}"
 
     - name: Build libsemanage packages
       command: >-
@@ -52,7 +64,6 @@
         {{ python_semanage_buildroot }}/RPMS/x86_64/libsemanage-python3*.rpm
       args:
         warn: no
-
   always:
     - name: Remove temporary directory
       file:
@@ -67,7 +78,6 @@
              [ansible_facts.distribution_major_version | int].keys() | list
              | difference(ansible_facts.packages.keys() | list) }}
         state: absent
-
   vars:
     python_semanage_buildroot: >-
       {{ python_semanage_tmp_dir.path }}/root/rpmbuild
