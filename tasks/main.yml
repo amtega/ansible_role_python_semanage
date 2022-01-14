@@ -5,10 +5,10 @@
     - include_tasks: gather.yml
 
     - block:
-        - include: factory.yml
+        - include_tasks: factory.yml
           when: python_semanage_is_factory_python
 
-        - include: custom.yml
+        - include_tasks: custom.yml
           when: not python_semanage_is_factory_python
       vars:
         python_semanage_is_factory_python: >-
@@ -16,6 +16,5 @@
              is search("/usr/bin/python3") }}
              or python_semanage_python_check_result.stdout
                 is search("/usr/libexec/platform-python3")
-
   tags:
     - role::python_semanage
