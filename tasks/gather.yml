@@ -2,7 +2,9 @@
 
 - name: Gather facts
   setup:
-  when: ansible_facts.python.executable is undefined
+  when: >-
+    ansible_facts.python.executable is undefined
+    or ansible_facts.distribution_major_version is version("8", "<=")
 
 - name: Gather python real path
   command: "realpath {{ ansible_facts.python.executable }}"
