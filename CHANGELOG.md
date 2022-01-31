@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [1.1.2] - 2022-01-31
+### Fixed
+- Fixed race condition installing in CentOS/RHEL 7.
+- Changed images used for testing.
+
 ## [1.1.1] - 2022-01-26
 ### Changed
 - Updated readme.
