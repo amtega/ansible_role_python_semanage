@@ -10,6 +10,7 @@ python_semanage_package_build_deps_centos_7:
   libselinux-devel: present
   libsepol-devel: present
   make: present
+  python-devel: present
   python3: present
   python3-devel: present
   rpm-build: present
