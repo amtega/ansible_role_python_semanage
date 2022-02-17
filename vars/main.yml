@@ -2,21 +2,21 @@
 # Role variables
 
 python_semanage_package_build_deps_centos_7:
-  audit-libs-devel: present
-  bison: present
-  bzip2-devel: present
-  flex: present
-  gcc: present
-  libselinux-devel: present
-  libsepol-devel: present
-  make: present
-  python-devel: present
-  python3: present
-  python3-devel: present
-  rpm-build: present
-  swig: present
-  ustr-devel: present
-  yum-utils: present
+  "audit-libs-devel": present
+  "bison": present
+  "bzip2-devel": present
+  "flex": present
+  "gcc-4*": present
+  "libselinux-devel": present
+  "libsepol-devel": present
+  "make": present
+  "python-devel": present
+  "python3": present
+  "python3-devel": present
+  "rpm-build": present
+  "swig": present
+  "ustr-devel": present
+  "yum-utils": present
 
 python_semanage_package_build_deps:
   centos:
