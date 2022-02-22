@@ -5,16 +5,11 @@
     name: amtega.packages
   vars:
     packages_os:
-      centos:
+      all:
         7:
           libselinux-python3: present
         8:
           python3-libsemanage: present
       fedora:
         all:
-          python3-libsemanage: present
-      redhat:
-        7:
-          libselinux-python3: present
-        8:
           python3-libsemanage: present
