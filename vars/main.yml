@@ -19,7 +19,5 @@ python_semanage_package_build_deps_centos_7:
   "yum-utils": present
 
 python_semanage_package_build_deps:
-  centos:
-    7: "{{ python_semanage_package_build_deps_centos_7 }}"
-  redhat:
+  all:
     7: "{{ python_semanage_package_build_deps_centos_7 }}"
