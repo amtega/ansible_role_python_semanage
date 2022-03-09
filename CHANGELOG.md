@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.5] - 2022-03-09
+### Fixed
+- Fixed during rpm build cleanup.
+
 ## [1.1.4] - 2022-02-22
 ### Changed
 - Adapted for CentOS derived distros. Related to ansible/main#263
