@@ -1,6 +1,6 @@
 # Ansible python_semanage role
 
-This is an [Ansible](http://www.ansible.com) role to setup python_semanage library.
+This is an [Ansible](http://www.ansible.com) role to setup python semanage library.
 
 ## Role Variables
 

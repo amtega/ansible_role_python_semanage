@@ -1,14 +1,16 @@
 ---
 # Role tasks
 
-- block:
-    - include_tasks: gather.yml
+- name: Setup python semanage library
+  block:
+    - ansible.builtin.include_tasks: gather.yml
 
-    - block:
-        - include_tasks: factory.yml
+    - name: Perform python semanage setup
+      block:
+        - ansible.builtin.include_tasks: factory.yml
           when: python_semanage_is_factory_python
 
-        - include_tasks: custom.yml
+        - ansible.builtin.include_tasks: custom.yml
           when: not python_semanage_is_factory_python
       vars:
         python_semanage_is_factory_python: >-

@@ -1,7 +1,7 @@
 ---
 
 - name: Check libsemanage-python3 package
-  command: rpm -q libsemanage-python3
+  ansible.builtin.command: rpm -q libsemanage-python3
   args:
     warn: no
   changed_when: no
