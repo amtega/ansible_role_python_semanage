@@ -5,7 +5,7 @@
   gather_facts: no
   tasks:
     - name: Setup python3
-      raw: yum install python3 -y
+      ansible.builtin.raw: yum install python3 -y
       changed_when: yes
       args:
         warn: no

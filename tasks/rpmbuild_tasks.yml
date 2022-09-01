@@ -1,83 +1,95 @@
 ---
 
-- block:
+- name: Build python semanage package
+  block:
     - name: Gather package facts
-      package_facts:
+      ansible.builtin.package_facts:
 
     - name: Setup required packages
-      include_role:
+      ansible.builtin.include_role:
         name: amtega.packages
       vars:
         packages_os: "{{ python_semanage_package_build_deps }}"
 
     - name: Create temporary directory
-      tempfile:
+      ansible.builtin.tempfile:
         state: directory
       register: python_semanage_tmp_dir
 
     - name: Download libsemanage source package
-      command: >-
+      ansible.builtin.command: >-
         yumdownloader --source libsemanage
         --destdir={{ python_semanage_tmp_dir.path }}
       register: python_semanage_result
+      changed_when: yes
 
     - name: Find libsemanage source package
-      find:
+      ansible.builtin.find:
         paths: "{{ python_semanage_tmp_dir.path }}"
         file_type: file
       register: python_semanage_srpm_search_result
+      changed_when: no
 
     - name: Install libsemanage source package
-      command: >-
+      ansible.builtin.command: >-
         rpm --root={{ python_semanage_tmp_dir.path }}
         -i {{ python_semanage_srpm_search_result.files.0.path }}
       args:
         warn: no
+      changed_when: yes
 
     - name: Gather dist tag for libsemanage package
-      shell: rpm -q libsemanage | cut -d'.' -f 3
+      ansible.builtin.shell: rpm -q libsemanage | cut -d'.' -f 3
       args:
         warn: no
       register: python_semanage_dist_tag_result
+      changed_when: no
 
     - name: Enable python3 in libsemanage SPEC file
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "{{ python_semanage_spec_path }}"
         regexp: "%global with_python3 0"
         line: "%global with_python3 1"
 
     - name: Setup dist tag in libsemanage SPEC file
-      replace:
+      ansible.builtin.replace:
         path: "{{ python_semanage_spec_path }}"
         regexp: "%\\{\\?dist\\}"
         replace: "{{ python_semanage_dist_tag_result.stdout | trim }}"
 
     - name: Build libsemanage packages
-      command: >-
+      ansible.builtin.command: >-
         rpmbuild
         --define "_topdir {{ python_semanage_buildroot }}"
         -ba {{ python_semanage_spec_path }}
+      changed_when: yes
 
     - name: Install libsemanage-python3 package
-      shell: >-
+      ansible.builtin.shell: >-
         yum install -y
         {{ python_semanage_buildroot }}/RPMS/x86_64/libsemanage-python3*.rpm
       args:
         warn: no
+      changed_when: yes
   always:
     - name: Remove temporary directory
-      file:
+      ansible.builtin.file:
         path: "{{ python_semanage_tmp_dir.path }}"
         state: absent
 
     - name: Remove packages used for build
-      package:
+      ansible.builtin.package:
         name: >-
           {{ python_semanage_package_build_deps
-             [ansible_facts.distribution | lower]
-             [ansible_facts.distribution_major_version | int].keys() | list
+             [python_semanage_distribution]
+             [python_semanage_major_version].keys() | list
              | difference(ansible_facts.packages.keys() | list) }}
         state: absent
+      vars:
+        python_semanage_distribution: >-
+          {{ ansible_facts.distribution | lower }}
+        python_semanage_major_version: >-
+          {{ ansible_facts.distribution_major_version | int }}
   vars:
     python_semanage_buildroot: >-
       {{ python_semanage_tmp_dir.path }}/root/rpmbuild
