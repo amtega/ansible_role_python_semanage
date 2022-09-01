@@ -5,7 +5,7 @@
   gather_facts: yes
   tasks:
     - name: Check semanage library
-      command: >-
+      ansible.builtin.command: >-
         {{ ansible_facts.python.executable }}
         - c "import semanage"
       changed_when: no

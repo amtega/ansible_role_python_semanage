@@ -1,13 +1,13 @@
 ---
 
 - name: Gather facts
-  setup:
+  ansible.builtin.setup:
   when: >-
     ansible_facts.python.executable is undefined
     or ansible_facts.distribution_major_version is version("8", "<=")
 
 - name: Gather python real path
-  command: "realpath {{ ansible_facts.python.executable }}"
+  ansible.builtin.command: "realpath {{ ansible_facts.python.executable }}"
   changed_when: no
   failed_when: no
   register: python_semanage_python_check_result
